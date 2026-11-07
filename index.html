@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chinese American Political Identity: A Timeline Map</title>
+    <meta name="description" content="An interactive map of how Chinese American political identity took shape, from the 1848 Gold Rush to today." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='2' y='2' width='12' height='12' fill='%23c2362b'/%3E%3C/svg%3E" />
+  </head>
+  <body class="min-h-screen bg-paper text-ink antialiased">
+    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded focus:bg-white focus:px-3 focus:py-2">Skip to content</a>
+
+    <header class="border-b border-rule bg-white">
+      <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-3">
+        <a href="#/" class="font-semibold leading-tight" data-nav="map">Chinese American Political Identity</a>
+        <nav aria-label="Main">
+          <ul class="flex flex-wrap gap-x-5 gap-y-1 text-[0.95rem]">
+            <li><a href="#/" data-nav="map" class="nav-link">Map</a></li>
+            <li><a href="#/list" data-nav="list" class="nav-link">List</a></li>
+            <li><a href="#/argument" data-nav="argument" class="nav-link">My argument</a></li>
+            <li><a href="#/sources" data-nav="sources" class="nav-link">Sources</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <div id="content-problems" class="hidden bg-red-700 px-4 py-2 text-sm text-white"></div>
+
+    <main id="main">
+      <!-- Map view -->
+      <section id="view-map" class="mx-auto max-w-6xl px-4 pt-4 pb-8" aria-label="Timeline map">
+        <div class="map-width mx-auto">
+          <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1" aria-hidden="true">
+            <p class="text-4xl font-bold tabular-nums tracking-tight" id="banner-year">1848</p>
+            <p class="text-xl font-semibold" id="banner-era"></p>
+          </div>
+          <p class="mt-1 min-h-[1.5em] max-w-prose text-muted" id="banner-summary"></p>
+
+          <div class="relative mt-3">
+            <div id="map" class="rounded-lg bg-white"></div>
+            <aside id="overlay" class="overlay" hidden aria-labelledby="overlay-title"></aside>
+          </div>
+
+          <div id="slider" class="mt-4"></div>
+
+          <p class="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-sm text-muted" aria-hidden="true">
+            <span class="legend" data-type="turning-point"><span class="marker-shape static-shape"></span>Turning point</span>
+            <span class="legend" data-type="turning-point" data-past><span class="marker-shape static-shape"></span>Earlier turning point</span>
+            <span class="legend" data-type="figure"><span class="marker-shape static-shape"></span>Important figure</span>
+            <span class="legend" data-type="fact"><span class="marker-shape static-shape"></span>Fun fact</span>
+            <span class="legend"><span class="territory-swatch"></span>Not yet a state</span>
+          </p>
+        </div>
+      </section>
+
+      <!-- List view -->
+      <section id="view-list" class="mx-auto max-w-4xl px-4 py-8" hidden>
+        <h1 class="mb-6 text-3xl font-semibold">Everything on the map, in order</h1>
+        <div id="list"></div>
+      </section>
+
+      <!-- My argument (write your closing essay here) -->
+      <section id="view-argument" class="mx-auto max-w-3xl px-4 py-8" hidden>
+        <h1 class="text-3xl font-semibold">How much does political identity shape Chinese American identity?</h1>
+        <div class="prose-body mt-6">
+          <p class="text-muted">TODO: write the closing essay here. Each turning point below links back to the map, so you can point to evidence.</p>
+          <h2>The turning points</h2>
+          <ul id="argument-links"></ul>
+        </div>
+      </section>
+
+      <!-- Sources -->
+      <section id="view-sources" class="mx-auto max-w-4xl px-4 py-8" hidden>
+        <div id="sources"></div>
+      </section>
+    </main>
+
+    <!-- First-visit intro -->
+    <dialog id="intro" class="dialog max-w-lg" aria-labelledby="intro-title">
+      <form method="dialog" class="p-6">
+        <h2 id="intro-title" class="text-2xl font-semibold leading-tight">How did Chinese American political identity take shape?</h2>
+        <p class="mt-3">Move the slider from the 1848 Gold Rush to today. Laws, places and people appear on the map as they happen. Click any marker to read its story.</p>
+        <p class="mt-3 text-sm text-muted">Content note: this site shows racist cartoons and describes violence, including massacres, as historical evidence.</p>
+        <button class="ctrl ctrl-primary mt-5" value="start" autofocus>Start in 1848</button>
+      </form>
+    </dialog>
+
+    <!-- Larger image from the Media tab -->
+    <dialog id="image-viewer" class="dialog max-w-4xl" aria-label="Image">
+      <form method="dialog" class="p-4">
+        <figure>
+          <img alt="" class="max-h-[75vh] w-full object-contain" />
+          <figcaption class="mt-2 text-sm text-muted"></figcaption>
+        </figure>
+        <button class="ctrl mt-3">Close</button>
+      </form>
+    </dialog>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

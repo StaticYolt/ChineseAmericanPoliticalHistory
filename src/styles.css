@@ -1,0 +1,280 @@
+@import "tailwindcss";
+
+/* Colors and font. Change these and every Tailwind class that uses them follows
+   (bg-paper, text-ink, text-muted, border-rule, bg-tp ...). */
+@theme {
+  --color-paper: #eef1f3;   /* page background */
+  --color-land: #dde3e7;    /* states */
+  --color-ink: #1c2430;     /* text, fact dots, figure rings */
+  --color-muted: #5b6573;   /* secondary text */
+  --color-rule: #cfd6dc;    /* borders */
+  --color-tp: #c2362b;      /* turning points: the only strong color */
+  --color-focus: #2563eb;   /* keyboard focus */
+  --font-sans: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+}
+
+:root {
+  color-scheme: light;
+  --thumb: 20px; /* slider thumb width; the ticks and era bands line up with it */
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+a { text-decoration: underline; text-underline-offset: 0.2em; }
+header a, .nav-link { text-decoration: none; }
+.nav-link[aria-current="page"] { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.35em; }
+
+/* Keep the map short enough that the slider stays on screen on a laptop. */
+.map-width { max-width: min(100%, calc((100vh - 340px) * 975 / 610)); min-width: min(100%, 640px); }
+
+/* ---------- Map ---------- */
+
+.state { fill: var(--color-land); stroke: none; transition: fill 0.2s; }
+.state.is-territory { fill: #f4f6f7; }
+.borders { fill: none; stroke: #fff; stroke-width: 1; stroke-linejoin: round; }
+.state.is-territory { stroke: #9aa5ae; stroke-width: 0.8; stroke-dasharray: 3 3; }
+
+/* Markers: every marker is a 28px button (easy to click and tap) holding a
+   shape. Turning points are the biggest, then figures, then facts. */
+.marker {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  translate: -50% -50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  border-radius: 6px;
+}
+.marker[data-state="hidden"] { display: none; }
+.marker[data-type="fact"] { z-index: 1; }
+.marker[data-type="figure"] { z-index: 2; }
+.marker[data-type="turning-point"] { z-index: 3; }
+.marker:hover, .marker:focus-visible, .marker.is-selected { z-index: 5; }
+
+.marker-shape { display: block; }
+[data-type="turning-point"] > .marker-shape { width: 20px; height: 20px; background: var(--color-tp); border: 2px solid #fff; box-shadow: 0 0 0 1px var(--color-tp); }
+[data-type="turning-point"][data-state="past"] > .marker-shape,
+.legend[data-past] > .marker-shape { width: 14px; height: 14px; background: #fff; border: 2px solid var(--color-muted); box-shadow: none; }
+[data-type="figure"] > .marker-shape { width: 15px; height: 15px; border-radius: 50%; background: #fff; border: 3px solid var(--color-ink); }
+[data-type="fact"] > .marker-shape { width: 9px; height: 9px; border-radius: 50%; background: var(--color-ink); box-shadow: 0 0 0 2px #fff; }
+
+.marker.is-selected > .marker-shape { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+
+.marker-label {
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  translate: -50% 0;
+  white-space: nowrap;
+  background: var(--color-ink);
+  color: #fff;
+  font-size: 0.8rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+.marker:hover > .marker-label, .marker:focus-visible > .marker-label { opacity: 1; }
+
+/* Legend and list view reuse the marker shapes. */
+.legend { display: inline-flex; align-items: center; gap: 8px; }
+.static-shape { flex: none; }
+.territory-swatch { width: 18px; height: 12px; background: #f4f6f7; border: 1px dashed #9aa5ae; }
+
+/* ---------- Slider ---------- */
+
+.era-band {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  font-size: 0.75rem;
+  background: var(--color-land);
+  border-right: 2px solid var(--color-paper);
+  color: var(--color-ink);
+  overflow: hidden;
+  cursor: pointer;
+}
+.era-band:first-child { border-radius: 4px 0 0 4px; }
+.era-band:last-child { border-radius: 0 4px 4px 0; border-right: 0; }
+.era-band.is-current { background: var(--color-ink); color: #fff; }
+
+.year-range {
+  appearance: none;
+  height: 28px;
+  background: transparent;
+  cursor: pointer;
+  display: block;
+}
+.year-range::-webkit-slider-runnable-track { height: 4px; background: var(--color-rule); border-radius: 2px; }
+.year-range::-moz-range-track { height: 4px; background: var(--color-rule); border-radius: 2px; }
+.year-range::-webkit-slider-thumb {
+  appearance: none;
+  width: var(--thumb);
+  height: var(--thumb);
+  margin-top: calc(2px - var(--thumb) / 2);
+  border-radius: 50%;
+  background: var(--color-ink);
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 1px var(--color-ink);
+  position: relative;
+  z-index: 2;
+}
+.year-range::-moz-range-thumb {
+  width: var(--thumb);
+  height: var(--thumb);
+  border-radius: 50%;
+  background: var(--color-ink);
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 1px var(--color-ink);
+}
+.tick {
+  position: absolute;
+  width: 3px;
+  height: 14px;
+  translate: -50% -50%;
+  background: var(--color-tp);
+  border-radius: 1px;
+}
+
+.ctrl {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--color-rule);
+  border-radius: 6px;
+  background: #fff;
+  font-size: 0.9rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+.ctrl:hover:not(:disabled) { border-color: var(--color-ink); }
+.ctrl:disabled { opacity: 0.45; cursor: not-allowed; }
+.ctrl-primary { background: var(--color-ink); color: #fff; border-color: var(--color-ink); padding: 0 18px; min-height: 42px; font-weight: 600; }
+
+/* ---------- Overlay ---------- */
+
+/* Desktop: a panel over the right side of the map. */
+.overlay {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  bottom: 12px;
+  width: min(30rem, calc(100% - 24px));
+  background: #fff;
+  border: 1px solid var(--color-rule);
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgb(28 36 48 / 0.18);
+  z-index: 20;
+  overflow: hidden;
+}
+.overlay[hidden] { display: none; }
+
+/* Phone: a sheet that slides up from the bottom of the screen. */
+@media (max-width: 767px) {
+  .overlay {
+    position: fixed;
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    height: 72vh;
+    border-radius: 14px 14px 0 0;
+    animation: sheet-up 0.22s ease-out;
+  }
+}
+@keyframes sheet-up { from { transform: translateY(40px); opacity: 0.6; } }
+
+/* Bookmark tabs on the right edge of the overlay. */
+.bookmarks {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 56px 0 0;
+  background: var(--color-paper);
+  border-left: 1px solid var(--color-rule);
+}
+.bookmark {
+  writing-mode: vertical-rl;
+  padding: 14px 8px;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  border-radius: 0 6px 6px 0;
+  margin-left: -1px;
+  border: 1px solid transparent;
+  border-left: 0;
+  cursor: pointer;
+}
+.bookmark:hover { color: var(--color-ink); }
+.bookmark[aria-selected="true"] {
+  background: #fff;
+  color: var(--color-ink);
+  font-weight: 600;
+  border-color: var(--color-rule);
+  box-shadow: inset 3px 0 0 var(--color-tp);
+}
+
+.card { border: 1px solid var(--color-rule); border-radius: 8px; padding: 14px; margin-top: 12px; }
+.initials {
+  display: grid;
+  place-items: center;
+  width: 4rem;
+  height: 4rem;
+  flex: none;
+  border-radius: 50%;
+  background: var(--color-land);
+  font-weight: 600;
+}
+.note { background: var(--color-paper); border-left: 3px solid var(--color-muted); padding: 8px 12px; font-size: 0.9rem; }
+.link { text-decoration: underline; text-underline-offset: 0.2em; cursor: pointer; text-align: left; }
+
+/* Text from Markdown fields */
+.prose-body { line-height: 1.6; }
+.prose-body h2 { font-size: 1.3rem; font-weight: 600; margin: 1.5rem 0 0.4rem; }
+.prose-body h3 { font-weight: 600; margin: 1rem 0 0.25rem; }
+.prose-body h3:first-child { margin-top: 0; }
+.prose-body p { margin: 0 0 0.6rem; }
+.prose-body ul { list-style: disc; padding-left: 1.25rem; margin: 0 0 0.6rem; }
+.sources { list-style: disc; padding-left: 1.25rem; }
+
+/* ---------- List view ---------- */
+
+.list-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: #fff;
+  border: 1px solid var(--color-rule);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.list-row > .marker-shape { margin-top: 6px; }
+@media (max-width: 600px) {
+  .list-row { flex-wrap: wrap; }
+}
+
+/* ---------- Dialogs ---------- */
+
+.dialog {
+  margin: auto;
+  border-radius: 12px;
+  background: #fff;
+  color: var(--color-ink);
+  width: calc(100% - 32px);
+}
+.dialog::backdrop { background: rgb(28 36 48 / 0.55); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
