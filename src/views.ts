@@ -65,7 +65,7 @@ export function renderSources(el: HTMLElement) {
     </section>
     <section class="mt-6 max-w-prose">
       <h2 class="text-xl font-semibold">How items were chosen</h2>
-      <p class="mt-1 text-muted">TODO: explain how you picked the ${turningPoints.length} turning points, the fun facts and the figures.</p>
+      <p class="mt-1 text-muted">TODO: explain how you picked the ${turningPoints.length} turning points, the facts and the figures.</p>
       <h2 class="mt-4 text-xl font-semibold">About the map</h2>
       <p class="mt-1">State borders are today's. A state not yet admitted to the Union in the selected year is drawn as a territory, even where the real territory had different borders.</p>
       <h2 class="mt-4 text-xl font-semibold">Content note</h2>

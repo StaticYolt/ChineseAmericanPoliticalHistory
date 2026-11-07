@@ -170,7 +170,7 @@ header a, .nav-link { text-decoration: none; }
   top: 12px;
   right: 12px;
   bottom: 12px;
-  width: min(30rem, calc(100% - 24px));
+  left: 12px;
   background: #fff;
   border: 1px solid var(--color-rule);
   border-radius: 10px;

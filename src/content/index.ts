@@ -29,12 +29,18 @@ turningPoints.forEach((tp, i) => {
 
 export type ItemState = 'hidden' | 'active' | 'past';
 
+// A fact that lasted a year or two would blink past while the slider moves, so
+// facts and figures stay on the map for at least this many years from their start.
+// The years shown in the panel are still the real `start`–`end`.
+export const MIN_VISIBLE_YEARS = 5;
+
 export function stateAt(item: MapItem, year: number): ItemState {
   if (year < item.start) return 'hidden';
   if (item.type === 'turning-point') {
     return year <= (activeUntil.get(item.id) ?? item.end) ? 'active' : 'past';
   }
-  return year <= item.end ? 'active' : 'hidden';
+  const lastYear = Math.max(item.end, item.start + MIN_VISIBLE_YEARS - 1);
+  return year <= lastYear ? 'active' : 'hidden';
 }
 
 export function yearRange(item: MapItem): string {

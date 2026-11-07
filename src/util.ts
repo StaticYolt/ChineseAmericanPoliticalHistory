@@ -20,4 +20,4 @@ export function prefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-export const typeLabel = { 'turning-point': 'Turning point', fact: 'Fun fact', figure: 'Important figure' } as const;
+export const typeLabel = { 'turning-point': 'Turning point', fact: 'fact', figure: 'Important figure' } as const;

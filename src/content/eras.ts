@@ -53,17 +53,3 @@ export const eras: Era[] = [
 export function eraAt(year: number): Era {
   return eras.find((e) => year >= e.start && year <= e.end) ?? eras[eras.length - 1];
 }
-
-/*
-Turning points - Gold rush (1848), Chinese Exclusion Act (1882), World war II and the Cold War (1945), Immigration and Nationality Act of 1965
-Facts - Taiping Rebellion (), Foreign Miners tax (1852), Railroads, Agriculture, Page Act (1875), Chinatowns, Chinese Massacre of 1871, Smaller Exclusioanry Ordinances, Angel Island (1910 - ...) 
-      San fransico Earthquake and fires (1906) -> paper son system
-      United States vs Wong Kim Ark (1898), Ging Hawk Club National Essay Competition
-      The Great Depression, Citizenship (December 17, 1943)
-      Chinese Alien Wives of American Citizens Act in 1946, permitting entry to the wives of Chinese men who were US citizens
-      Chinese Confesison Program, 
-      Wen Ho Lee My country vs me (2003)
-      Covid-19
-
-
-*/
